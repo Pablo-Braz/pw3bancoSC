@@ -1,12 +1,12 @@
 {
-  "name": "express",
+  "name": "api_loja_veiculos",
   "version": "1.0.0",
   "description": "API sistema L-V",
   "main": "src/app.js",
   "type": "module",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js",
+    "start": "node .",
+    "dev": "nodemon .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
