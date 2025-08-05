@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Tempo de geração: 29/07/2025 às 11:38
+-- Tempo de geração: 29/07/2025 às 14:26
 -- Versão do servidor: 8.0.30
--- Versão do PHP: 8.3.4
+-- Versão do PHP: 8.1.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Banco de dados: `bdpw`
+-- Banco de dados: `l_v`
 --
 
 -- --------------------------------------------------------
@@ -88,7 +88,7 @@ CREATE TABLE `veiculo` (
   `ano_modelo` int DEFAULT NULL,
   `cor` varchar(50) DEFAULT NULL,
   `num_portas` int DEFAULT NULL,
-  `fotos` json DEFAULT NULL,
+  `fotos` JSON DEFAULT NULL,
   `categoria_id` int DEFAULT NULL,
   `montadora_id` int DEFAULT NULL,
   `tipo_cambio` varchar(50) DEFAULT NULL,
@@ -101,35 +101,6 @@ CREATE TABLE `veiculo` (
 -- Despejando dados para a tabela `veiculo`
 --
 
-INSERT INTO `veiculo` (`id`, `modelo`, `ano_fabricacao`, `ano_modelo`, `cor`, `num_portas`, `fotos`, `categoria_id`, `montadora_id`, `tipo_cambio`, `tipo_direcao`, `data_cadastro`, `data_alteracao`) VALUES
-(1, 'golf variant GTI', 2019, 2020, 'Preto', 4, NULL, 3, 1, 'Automático', 'Elétrica', '2023-04-26 17:03:00', '2025-07-29 11:36:58'),
-(2, 'Gol', 2021, 2022, 'Prata', 4, NULL, 2, 1, 'Manual', 'Hidráulica', '2023-04-26 17:03:00', '2025-07-29 11:36:58'),
-(3, 'Corolla', 2021, 2022, 'Preto', 4, NULL, 1, 2, 'Automático', 'Elétrica', '2023-04-26 17:03:00', '2025-07-29 11:36:58'),
-(4, 'Yaris', 2021, 2022, 'Prata', 4, NULL, 2, 2, 'Automático', 'Elétrica', '2023-04-26 17:03:00', '2025-07-29 11:36:58'),
-(5, 'Etios', 2021, 2022, 'Cinza', 4, NULL, 2, 2, 'Manual', 'Hidráulica', '2023-04-26 17:03:00', '2025-07-29 11:36:58'),
-(6, 'Civic', 2021, 2022, 'Branco', 4, NULL, 1, 3, 'Automático', 'Elétrica', '2023-04-26 17:03:00', '2025-07-29 11:36:58'),
-(7, 'City', 2020, 2021, 'Marrom', 4, NULL, 1, 3, 'Automático', 'Elétrica', '2023-04-26 17:03:00', '2025-07-29 11:36:58'),
-(8, 'Fusion', 2019, 2020, 'Preto', 4, NULL, 1, 4, 'Automático', 'Elétrica', '2023-04-26 17:03:00', '2025-07-29 11:36:58'),
-(9, 'Focus', 2019, 2020, 'Preto', 4, NULL, 1, 4, 'Automático', 'Elétrica', '2023-04-26 17:03:00', '2025-07-29 11:36:58'),
-(10, 'Fiesta', 2020, 2021, 'Vermelho', 4, NULL, 2, 4, 'Manual', 'Mecânica', '2023-04-26 17:03:00', '2025-07-29 11:36:58'),
-(11, 'Cruze LTZ 1.5 Turbo', 2021, 2021, 'Azul', 4, NULL, 1, 5, 'Automático', 'Elétrica', '2023-04-26 17:03:00', '2025-07-29 11:36:58'),
-(12, 'Onix', 2021, 2022, 'Vermelho', 4, NULL, 2, 5, 'Manual', 'Elétrica', '2023-04-26 17:03:00', '2025-07-29 11:36:58'),
-(13, 'Tracker', 2020, 2021, 'Branco', 4, NULL, 4, 5, 'Automático', 'Elétrica', '2023-04-26 17:03:00', '2025-07-29 11:36:58'),
-(14, 'BMW M4    ', 2020, 2020, 'Prata', 2, NULL, 5, 6, 'Automático', 'Elétrica', '2023-04-26 17:03:00', '2025-07-29 11:36:58'),
-(15, 'Uno', 2020, 2021, 'Azul', 2, NULL, 2, 7, 'Manual', 'Mecânica', '2023-04-26 17:03:00', '2025-07-29 11:36:58'),
-(16, 'Palio', 2019, 2020, 'Amarelo', 2, NULL, 2, 7, 'Manual', 'Mecânica', '2023-04-26 17:03:00', '2025-07-29 11:36:58'),
-(17, 'Passat', 2021, 2022, 'Preto', 4, NULL, 1, 1, 'Automático', 'Elétrica', '2023-08-01 14:01:46', '2025-07-29 11:36:58'),
-(22, 'Cruze LTZ', 2021, 2021, 'Azul', 4, NULL, 1, 5, 'Automático', 'Elétrica', '2023-09-07 17:43:12', '2025-07-29 11:36:58'),
-(23, 'Passat ffff', 2021, 2022, 'Preto', 4, NULL, 1, 1, 'Automático', 'Elétrica', '2023-09-07 17:45:38', '2025-07-29 11:36:58'),
-(24, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-09-07 17:46:20', '2023-09-07 17:46:20'),
-(25, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-09-07 17:50:18', '2023-09-07 17:50:18'),
-(26, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-09-07 17:51:37', '2023-09-07 17:51:37'),
-(27, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-09-07 17:53:37', '2023-09-07 17:53:37'),
-(28, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-09-07 17:53:56', '2023-09-07 17:53:56'),
-(29, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-09-07 17:57:19', '2023-09-07 17:57:19'),
-(30, 'Cruze LTZ', 2021, 2021, 'Azul', 4, NULL, 1, 5, 'Automático', 'Elétrica', '2023-09-07 17:59:07', '2025-07-29 11:36:58'),
-(33, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-09-07 18:50:58', '2023-09-07 18:50:58'),
-(34, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-11-01 21:37:30', '2023-11-01 21:37:30');
 
 --
 -- Índices para tabelas despejadas

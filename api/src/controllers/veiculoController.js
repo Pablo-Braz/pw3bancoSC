@@ -1,11 +1,11 @@
-import * as categoria from '../models/CategoriaModel.js';
+import * as Veiculo from '../models/VeiculoModel.js';
 
 export const cadastrar = async (req, res) => {
     try {
-        const categoria = req.body;
+        const veiculo = req.body;
 
         // Verificar se o corpo da requisição contém os dados necessários
-        if (!categoria || Object.keys(categoria).length === 0) {
+        if (!veiculo || Object.keys(veiculo).length === 0) {
             return res.status(400).json({
                 success: false,
                 status: 400,
@@ -13,25 +13,26 @@ export const cadastrar = async (req, res) => {
             });
         }
         // Validar os dados do veículo
-        if (!categoria.tipo || !categoria.icone || !categoria.data_cadastro || !categoria.data_alteracao ) {
+        if (!veiculo.modelo || !veiculo.ano_fabricacao || !veiculo.ano_modelo || !veiculo.cor || !veiculo.num_portas || !veiculo.categoria_id || !veiculo.montadora_id || !veiculo.tipo_cambio || !veiculo.tipo_direcao) {
             return res.status(400).json({
                 success: false,
                 status: 400,
                 message: 'Dados do veículo incompletos ou inválidos'
             });
         }
-        const novaCategoria = await categoria.cadastrar(categoria);   
+        
+        const novoVeiculo = await Veiculo.cadastrar(veiculo);   
         res.status(201).json({
             success: true,
             status: 201,
-            message: 'Categoria cadastrada com sucesso',
-            veiculoId: novaCategoria
+            message: 'Veículo cadastrado com sucesso',
+            veiculoId: novoVeiculo
         });
     } catch (error) {
         res.status(500).json({
             success: false,
             status: 500,
-            message: 'Erro ao cadastrar Categoria',
+            message: 'Erro ao cadastrar veículo',
             error: error.message
         });
     }

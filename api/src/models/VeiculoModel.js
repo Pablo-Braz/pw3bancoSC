@@ -22,7 +22,7 @@ export const cadastrar = async (veiculo) => {
         const query = `INSERT INTO veiculo (modelo, ano_fabricacao, ano_modelo, cor, num_portas, fotos, categoria_id, montadora_id, tipo_cambio, tipo_direcao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
         // Executar a query com os valores do veículo
-        const [result] = await cx.query(query, [modelo,ano_fabricacao,ano_modelo,cor,num_portas,fotos,categoria_id,montadora_id,tipo_cambio,tipo_direcao]);
+        const [result] = await cx.query(query,[modelo,ano_fabricacao,ano_modelo,cor,num_portas,fotos,categoria_id,montadora_id,tipo_cambio,tipo_direcao]);
     
         // Verificar se a inserção foi bem-sucedida
         if (result.affectedRows === 0) {

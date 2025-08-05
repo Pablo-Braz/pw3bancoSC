@@ -5,7 +5,7 @@ dotenv.config();
 
 // Importando as rotas
 import veiculoRoute from './routes/veiculoRoute.js';
-import categoriaRoute from './routes/categoria.js';
+//import categoriaRoute from './routes/categoriaRoute.js'
 
 const app = express();
 
@@ -23,15 +23,14 @@ app.get('/',(req,res)=>{
         rotas:{
             'GET - Consultar veículo': `${rootDomain}/api/veiculo`,
             'GET - Consultar todos os veículos': `${rootDomain}/api/veiculos`,
-            'POST - Cadastrar veículo':`${rootDomain}/api/veiculo`,
-            'POST - Cadastrar categoria':`${rootDomain}/api/categoria`
+            'POST - Cadastrar veículo':`${rootDomain}/api/veiculo`
         }
     });
 });
 
 // Configurando as rotas
 app.use('/api', veiculoRoute);
-app.use('/api', categoriaRoute);
+//app.use('/api', categoriaRoute);
 
 const PORT = process.env.PORT || 3000; 
 app.listen(PORT,()=>{
