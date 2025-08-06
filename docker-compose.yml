@@ -5,7 +5,7 @@ services:
     image: node:18
     working_dir: /usr/src/app
     volumes:
-      - ./:/usr/src/app
+      - ./api:/usr/src/app
     ports:
       - "3000:3000"
     environment:
@@ -32,5 +32,34 @@ services:
     volumes:
       - db_data:/var/lib/mysql
 
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin-lv
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root
+    
+  lv_mobile:
+    image: node:18
+    working_dir: /usr/src/app
+    volumes:
+      - ./lv_mobile:/usr/src/app
+    tty: true
+    ports:
+      - "19000:19000"
+      - "8081:8081"
+      - "19006:19006"  # Porta web do Expo
+    environment:
+      - NODE_ENV=development
+      - API_URL=http://api:3000
+    depends_on:
+      - api
+    command: npx expo start --web
 volumes:
   db_data:

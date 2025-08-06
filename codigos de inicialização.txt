@@ -1,0 +1,3 @@
+comandos docker
+para desigar:docker compose down
+para subir:docker compose up -d
