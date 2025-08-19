@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  api:
+    image: node:18
+    container_name: api
+    working_dir: /usr/src/app
+    volumes:
+      - ./api:/usr/src/app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=l_v
+    depends_on:
+      - db
+    command: sh -c "npm install && npm run dev"
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=l_v
+      - MYSQL_USER=lv_user
+      - MYSQL_PASSWORD=lv_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_HOST=db
+      - PMA_USER=root
+      - PMA_PASSWORD=root
+    depends_on:
+      - db
+
+  lv_mobile:
+    image: node:18
+    container_name: lv_mobile
+    working_dir: /usr/src/app
+    volumes:
+      - ./lv_mobile:/usr/src/app
+    tty: true
+    ports:
+      - "19000:19000"
+      - "8081:8081"
+    command: sh -c "npm install && npm start"
+    environment:
+      - NODE_ENV=development
+      - API_URL=http://api:3000
+    depends_on:
+      - api
+
+volumes:
+  db_data:
+    name: db_data
