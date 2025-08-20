@@ -7,8 +7,8 @@ const developmentConfig = {
     port: 3306,
     name: "l_v",
     dialect: "mysql",
-    user: "lv_user",
-    password: "lv_password"
+    user: "root",
+    password: "root"
 };
 
 const productionConfig = {

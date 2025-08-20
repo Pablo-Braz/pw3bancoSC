@@ -42,13 +42,35 @@ export const consultar = async (req, res) => {
      res.status(200).json({
             success: true,
             status: 200,
-            message: 'Em desenvolvimento'
+            message: 'Em desenvolvimentosss'
         });
 }
+
 export const consultarTodos = async (req, res) => {
-     res.status(200).json({
+    const search = req.query.search || '';
+    try {
+    const veiculos = await Veiculo.consultarTodos(search);
+        // Verificar se foram encontrados veículos
+        if (veiculos.length === 0) {
+            return res.status(404).json({
+                success: false,
+                status: 404,
+                message: 'Nenhum veículo encontrado',
+                data: []
+            });
+        }
+        res.status(200).json({
             success: true,
             status: 200,
-            message: 'Em desenvolvimento'
+            message: 'Veículos consultados com sucesso',
+            data: veiculos
         });
-}
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            status: 500,
+            message: 'Erro ao consultar veículos',
+            error: error.message
+        });
+    }
+};

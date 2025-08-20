@@ -39,3 +39,32 @@ export const cadastrar = async (veiculo) => {
         }
     }
 }
+
+export const consultarTodos = async (search) => {
+    // Obter uma conexão do pool
+    const cx = await pool.getConnection(); 
+    try {
+        // Query para consultar todos os veículos
+        let query = `SELECT * FROM veiculo`;
+        let params = [];
+
+        // Verificar se há um termo de pesquisa
+        if (search) {
+            query += ` WHERE modelo LIKE ?`;
+            params.push(`%${search}%`);
+        }
+
+        // Executar a query com os parâmetros
+        const [rows] = await cx.query(query, params);
+        
+        // Retornar os resultados da consulta
+        return rows; 
+    } catch (error) {
+        // Lançar o erro para ser tratado pelo chamador
+        throw error; 
+    } finally {
+        if (cx) {
+            cx.release(); // Liberar a conexão de volta ao pool
+        }
+    }
+} 
