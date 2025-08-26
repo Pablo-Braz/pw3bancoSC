@@ -1,3 +1,17 @@
+export const consultarPorId = async (id) => {
+    const cx = await pool.getConnection();
+    try {
+        const query = 'SELECT * FROM veiculo WHERE id = ?';
+        const [rows] = await cx.query(query, [id]);
+        return rows[0] || null;
+    } catch (error) {
+        throw error;
+    } finally {
+        if (cx) {
+            cx.release();
+        }
+    }
+};
 import pool from "../database/data.js";
 
 

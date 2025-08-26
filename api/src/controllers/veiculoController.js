@@ -46,6 +46,32 @@ export const consultar = async (req, res) => {
         });
 }
 
+export const consultarid = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const veiculo = await Veiculo.consultarPorId(id);
+        if (!veiculo) {
+            return res.status(404).json({
+                success: false,
+                status: 404,
+                message: 'Veículo não encontrado'
+            });
+        }
+        res.status(200).json({
+            success: true,
+            status: 200,
+            data: veiculo
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            status: 500,
+            message: 'Erro ao consultar veículo por id',
+            error: error.message
+        });
+    }
+};
+
 export const consultarTodos = async (req, res) => {
     const search = req.query.search || '';
     try {
