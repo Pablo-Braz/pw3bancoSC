@@ -1,3 +1,38 @@
+export const deletar = async (req, res) => {
+    try {
+        const id = req.params.id;
+        // Verifica se o veículo existe
+        const veiculoExistente = await Veiculo.consultarPorId(id);
+        if (!veiculoExistente) {
+            return res.status(404).json({
+                success: false,
+                status: 404,
+                message: 'Veículo não encontrado'
+            });
+        }
+        // Deleta o veículo
+        const resultado = await Veiculo.deletar(id);
+        if (resultado.affectedRows === 0) {
+            return res.status(400).json({
+                success: false,
+                status: 400,
+                message: 'Não foi possível deletar o veículo'
+            });
+        }
+        res.status(200).json({
+            success: true,
+            status: 200,
+            message: 'Veículo deletado com sucesso'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            status: 500,
+            message: 'Erro ao deletar veículo',
+            error: error.message
+        });
+    }
+};
 import * as Veiculo from '../models/VeiculoModel.js';
 
 export const cadastrar = async (req, res) => {
@@ -100,3 +135,47 @@ export const consultarTodos = async (req, res) => {
         });
     }
 };
+
+export const editar = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const dadosAtualizados = req.body;
+
+        // Verifica se o veículo existe
+        const veiculoExistente = await Veiculo.consultarPorId(id);
+        if (!veiculoExistente) {
+            return res.status(404).json({
+                success: false,
+                status: 404,
+                message: 'Veículo não encontrado'
+            });
+        }
+
+        // Atualiza o veículo
+        const resultado = await Veiculo.editar(id, dadosAtualizados);
+        if (resultado.affectedRows === 0) {
+            return res.status(400).json({
+                success: false,
+                status: 400,
+                message: 'Não foi possível atualizar o veículo'
+            });
+        }
+
+        // Retorna o veículo atualizado
+        const veiculoAtualizado = await Veiculo.consultarPorId(id);
+        res.status(200).json({
+            success: true,
+            status: 200,
+            message: 'Veículo atualizado com sucesso',
+            data: veiculoAtualizado
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            status: 500,
+            message: 'Erro ao editar veículo',
+            error: error.message
+        });
+    }
+};
+

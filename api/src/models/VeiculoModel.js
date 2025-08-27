@@ -1,3 +1,17 @@
+export const deletar = async (id) => {
+    const cx = await pool.getConnection();
+    try {
+        const query = 'DELETE FROM veiculo WHERE id = ?';
+        const [result] = await cx.query(query, [id]);
+        return result;
+    } catch (error) {
+        throw error;
+    } finally {
+        if (cx) {
+            cx.release();
+        }
+    }
+};
 export const consultarPorId = async (id) => {
     const cx = await pool.getConnection();
     try {
@@ -82,3 +96,45 @@ export const consultarTodos = async (search) => {
         }
     }
 } 
+
+
+export const editar = async (id, dados) => {
+    const cx = await pool.getConnection();
+    try {
+        const query = `
+            UPDATE veiculo SET 
+                modelo = ?, 
+                ano_fabricacao = ?, 
+                ano_modelo = ?, 
+                cor = ?, 
+                num_portas = ?, 
+                fotos = ?, 
+                categoria_id = ?, 
+                montadora_id = ?, 
+                tipo_cambio = ?, 
+                tipo_direcao = ?
+            WHERE id = ?
+        `;
+        const params = [
+            dados.modelo,
+            dados.ano_fabricacao,
+            dados.ano_modelo,
+            dados.cor,
+            dados.num_portas,
+            dados.fotos,
+            dados.categoria_id,
+            dados.montadora_id,
+            dados.tipo_cambio,
+            dados.tipo_direcao,
+            id
+        ];
+        const [result] = await cx.query(query, params);
+        return result;
+    } catch (error) {
+        throw error;
+    } finally {
+        if (cx) {
+            cx.release();
+        }
+    }
+};
