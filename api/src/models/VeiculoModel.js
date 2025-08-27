@@ -121,7 +121,7 @@ export const editar = async (id, dados) => {
             dados.ano_modelo,
             dados.cor,
             dados.num_portas,
-            dados.fotos,
+                typeof dados.fotos === 'string' ? dados.fotos : Array.isArray(dados.fotos) ? dados.fotos.join(',') : '',
             dados.categoria_id,
             dados.montadora_id,
             dados.tipo_cambio,
