@@ -1,3 +1,4 @@
+import pool from "../database/data.js";
 export const deletar = async (id) => {
     const cx = await pool.getConnection();
     try {
