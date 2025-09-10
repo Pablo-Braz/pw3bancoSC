@@ -101,6 +101,33 @@ CREATE TABLE `veiculo` (
 -- Despejando dados para a tabela `veiculo`
 --
 
+CREATE TABLE `usuario` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `nome` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL UNIQUE,
+  `senha` varchar(255) NOT NULL,
+  `data_cadastro` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+--
+-- Estrutura para tabela `token`
+--
+
+CREATE TABLE `token` (
+  `usuario` int unsigned NOT NULL,
+  `chave_token` varchar(255) DEFAULT NULL,
+  `validade` datetime DEFAULT NULL,
+  PRIMARY KEY (`usuario`),
+  CONSTRAINT `token_ibfk_1` FOREIGN KEY (`usuario`) REFERENCES `usuario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Criação da tabela usuario
+--
+
+
 
 --
 -- Índices para tabelas despejadas
