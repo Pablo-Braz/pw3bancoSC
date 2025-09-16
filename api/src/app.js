@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 dotenv.config();
+import cookieParser from 'cookie-parser';
 
 // Importando as rotas
 import veiculoRoute from './routes/veiculoRoute.js';
@@ -10,8 +11,12 @@ import autenticacaoRoute from './routes/autenticacao.js';
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: (origin, cb) => cb(null, origin || true),
+    credentials: true
+}));
 app.use(express.json());
+app.use(cookieParser());
 
 
 // Rotas de públicas

@@ -5,7 +5,7 @@ export const consultar = async (filtro = '') => {
     let cx;
     try {
         cx = await pool.getConnection();
-        const cmdSql = 'SELECT id,nome,email,permissao,avatar,status,createdAt,updatedAt FROM usuario WHERE nome LIKE ?;';
+    const cmdSql = 'SELECT id,nome,email FROM usuario WHERE nome LIKE ?;';
         const [dados, meta_dados] = await cx.query(cmdSql, [`%${filtro}%`]);
         return dados;
     } 
@@ -21,7 +21,7 @@ export const consultarPorId = async (id) => {
     let cx;
     try {
         cx = await pool.getConnection();
-        const cmdSql = 'SELECT id,nome,email,permissao,avatar,status,createdAt,updatedAt FROM usuario WHERE id = ?;';
+    const cmdSql = 'SELECT id,nome,email FROM usuario WHERE id = ?;';
         const [dados, meta_dados] = await cx.query(cmdSql, [id]);
         return dados;
     } 
@@ -37,7 +37,7 @@ export const consultarPorEmail = async (email) => {
     let cx;
     try {
         cx = await pool.getConnection();
-        const cmdSql = 'SELECT id,nome,email,permissao,avatar,status,createdAt,updatedAt FROM usuario WHERE email = ?;';
+    const cmdSql = 'SELECT id,nome,email FROM usuario WHERE email = ?;';
         const [dados, meta_dados] = await cx.query(cmdSql, [email]);
         return dados;
     } 
@@ -76,16 +76,16 @@ export const login = async (email, senha)=>{
 export const cadastrar = async (usuario) => {
     let cx;
     try {        
-        const {nome,email,senha,permissao,avatar,status} = usuario;
-        const cmdSql = 'INSERT INTO usuario (nome,email,senha,permissao,avatar,status) VALUES (?, ?, ?, ?, ?, ?);';
+        const {nome,email,senha} = usuario;
+        const cmdSql = 'INSERT INTO usuario (nome,email,senha) VALUES (?, ?, ?);';
         cx = await pool.getConnection();
         const hashSenha = await bcrypt.hash(senha, 10);
-        await cx.query(cmdSql, [nome,email,hashSenha,permissao,avatar,status]);
+        await cx.query(cmdSql, [nome,email,hashSenha]);
 
         const [result] = await cx.query('SELECT LAST_INSERT_ID() as lastId');
         const lastId = result[0].lastId;
  
-        const [dados, meta_dados] = await cx.query('SELECT id,nome,email,permissao,avatar,status,createdAt,updatedAt FROM usuario WHERE id = ?;', [lastId]);
+    const [dados, meta_dados] = await cx.query('SELECT id,nome,email FROM usuario WHERE id = ?;', [lastId]);
         return dados;
     } 
     catch (error) {
@@ -98,24 +98,27 @@ export const cadastrar = async (usuario) => {
 export const alterar = async (usuario) => {
     let cx;
     try {
-        let valores = [];
-        let cmdSql = 'UPDATE usuario SET ';
-        for(const key in usuario){
-            if(key === 'senha'){
-                const hashSenha = await bcrypt.hash(usuario[key], 10);
-                valores.push(hashSenha);
+        const camposPermitidos = ['nome', 'email', 'senha'];
+        const valores = [];
+        let sets = [];
+        for (const key of camposPermitidos) {
+            if (usuario[key] !== undefined) {
+                if (key === 'senha') {
+                    const hashSenha = await bcrypt.hash(usuario[key], 10);
+                    valores.push(hashSenha);
+                } else {
+                    valores.push(usuario[key]);
+                }
+                sets.push(`${key} = ?`);
             }
-            else{
-                valores.push(usuario[key]);
-            }
-            cmdSql += `${key} = ?, `;
         }
-        cmdSql = cmdSql.replace(', id = ?,', '');
-        cmdSql += 'WHERE id = ?;';
+        if (sets.length === 0) return [];
+        const cmdSql = `UPDATE usuario SET ${sets.join(', ')} WHERE id = ?;`;
+        valores.push(usuario.id);
         cx = await pool.getConnection();     
         const [execucao] = await cx.query(cmdSql, valores);
         if(execucao.affectedRows > 0){
-            const [dados, meta_dados] = await cx.query('SELECT * FROM usuario WHERE id = ?;', usuario.id);
+            const [dados, meta_dados] = await cx.query('SELECT id,nome,email FROM usuario WHERE id = ?;', usuario.id);
             return dados;
         }
         return [];

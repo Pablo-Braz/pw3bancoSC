@@ -27,7 +27,6 @@ export const consultarPorId = async (id) => {
         }
     }
 };
-import pool from "../database/data.js";
 
 
 export const cadastrar = async (veiculo) => {    
