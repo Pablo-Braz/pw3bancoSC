@@ -25,10 +25,15 @@ app.get('/',(req,res)=>{
     res.status(200).json({     
         status_server: 'ok',
         dominio_raiz : rootDomain,
-        atualização: '14/09/2024 - 18:42',
+        atualização: '17/09/2025 - 14:30',
         rotas:{
             'POST - Login': `${rootDomain}/api/usuario/login`,
             'POST - Cadastrar usuário': `${rootDomain}/api/usuario`,
+            'GET - Usuário logado': `${rootDomain}/api/usuario/logado`,
+            'GET - Listar usuários': `${rootDomain}/api/usuario`,
+            'GET - Consultar usuário por ID': `${rootDomain}/api/usuario/{id}`,
+            'PUT - Editar usuário': `${rootDomain}/api/usuario/{id}`,
+            'DELETE - Deletar usuário': `${rootDomain}/api/usuario/{id}`,
             'GET - Consultar veículo por ID': `${rootDomain}/api/veiculo/{id}`,
             'GET - Consultar todos os veículos': `${rootDomain}/api/veiculos`,
             'POST - Cadastrar veículo':`${rootDomain}/api/veiculo`,

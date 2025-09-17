@@ -1,8 +1,8 @@
 export const deletar = async (req, res) => {
     try {
         const id = req.params.id;
-        // Verifica se o veículo existe
-        const veiculoExistente = await Veiculo.consultarPorId(id);
+        // Verifica se o veículo existe e pertence ao usuário
+        const veiculoExistente = await Veiculo.consultarPorId(id, req.usuario.id);
         if (!veiculoExistente) {
             return res.status(404).json({
                 success: false,
@@ -11,7 +11,7 @@ export const deletar = async (req, res) => {
             });
         }
         // Deleta o veículo
-        const resultado = await Veiculo.deletar(id);
+        const resultado = await Veiculo.deletar(id, req.usuario.id);
         if (resultado.affectedRows === 0) {
             return res.status(400).json({
                 success: false,
@@ -55,6 +55,9 @@ export const cadastrar = async (req, res) => {
                 message: 'Dados do veículo incompletos ou inválidos'
             });
         }
+
+        // Adicionar o ID do usuário logado
+        veiculo.usuario_id = req.usuario.id;
         
         const novoVeiculo = await Veiculo.cadastrar(veiculo);   
         res.status(201).json({
@@ -84,7 +87,7 @@ export const consultar = async (req, res) => {
 export const consultarid = async (req, res) => {
     try {
         const id = req.params.id;
-        const veiculo = await Veiculo.consultarPorId(id);
+        const veiculo = await Veiculo.consultarPorId(id, req.usuario.id);
         if (!veiculo) {
             return res.status(404).json({
                 success: false,
@@ -110,7 +113,7 @@ export const consultarid = async (req, res) => {
 export const consultarTodos = async (req, res) => {
     const search = req.query.search || '';
     try {
-    const veiculos = await Veiculo.consultarTodos(search);
+    const veiculos = await Veiculo.consultarTodos(search, req.usuario.id);
         // Verificar se foram encontrados veículos
         if (veiculos.length === 0) {
             return res.status(404).json({
@@ -141,8 +144,8 @@ export const editar = async (req, res) => {
         const id = req.params.id;
         const dadosAtualizados = req.body;
 
-        // Verifica se o veículo existe
-        const veiculoExistente = await Veiculo.consultarPorId(id);
+        // Verifica se o veículo existe e pertence ao usuário
+        const veiculoExistente = await Veiculo.consultarPorId(id, req.usuario.id);
         if (!veiculoExistente) {
             return res.status(404).json({
                 success: false,
@@ -152,7 +155,7 @@ export const editar = async (req, res) => {
         }
 
         // Atualiza o veículo
-        const resultado = await Veiculo.editar(id, dadosAtualizados);
+        const resultado = await Veiculo.editar(id, dadosAtualizados, req.usuario.id);
         if (resultado.affectedRows === 0) {
             return res.status(400).json({
                 success: false,
@@ -162,7 +165,7 @@ export const editar = async (req, res) => {
         }
 
         // Retorna o veículo atualizado
-        const veiculoAtualizado = await Veiculo.consultarPorId(id);
+        const veiculoAtualizado = await Veiculo.consultarPorId(id, req.usuario.id);
         res.status(200).json({
             success: true,
             status: 200,

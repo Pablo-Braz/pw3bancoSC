@@ -1,0 +1,305 @@
+{
+  "info": {
+    "name": "Loja Veículos API",
+    "description": "API para sistema de loja de veículos com autenticação",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Autenticação",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Verifica se o login foi bem-sucedido",
+                  "pm.test(\"Login realizado com sucesso\", function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    ",
+                  "    // Verifica se response tem success e token",
+                  "    pm.expect(responseJson.success).to.be.true;",
+                  "    pm.expect(responseJson.token).to.not.be.undefined;",
+                  "    ",
+                  "    // Salva token automaticamente na variável de environment",
+                  "    if (responseJson.token) {",
+                  "        pm.environment.set(\"token\", responseJson.token);",
+                  "        console.log(\"🔐 Token salvo automaticamente!\");",
+                  "        console.log(\"Token:\", responseJson.token.substring(0, 20) + \"...\");",
+                  "        ",
+                  "        // Salva também dados do usuário se existirem",
+                  "        if (responseJson.usuario) {",
+                  "            pm.environment.set(\"user_id\", responseJson.usuario.id);",
+                  "            pm.environment.set(\"user_name\", responseJson.usuario.nome);",
+                  "            console.log(\"👤 Usuário:\", responseJson.usuario.nome);",
+                  "        }",
+                  "    }",
+                  "});",
+                  "",
+                  "// Verifica se o status code está correto",
+                  "pm.test(\"Status code é 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"joao@example.com\",\n  \"senha\": \"minhasenha123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/usuario/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "usuario", "login"]
+            }
+          }
+        },
+        {
+          "name": "Cadastrar Usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Auto-salva token no cadastro também",
+                  "const responseJson = pm.response.json();",
+                  "",
+                  "if (responseJson.success && responseJson.token) {",
+                  "    pm.environment.set(\"token\", responseJson.token);",
+                  "    console.log(\"🔐 Token do cadastro salvo automaticamente!\");",
+                  "    ",
+                  "    if (responseJson.data) {",
+                  "        pm.environment.set(\"user_id\", responseJson.data.id);",
+                  "        pm.environment.set(\"user_name\", responseJson.data.nome);",
+                  "    }",
+                  "}",
+                  "",
+                  "pm.test(\"Usuário cadastrado com sucesso\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"João da Silva\",\n  \"email\": \"joao@example.com\",\n  \"senha\": \"minhasenha123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/usuario",
+              "host": ["{{base_url}}"],
+              "path": ["api", "usuario"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Veículos",
+      "item": [
+        {
+          "name": "Listar Veículos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/veiculos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "veiculos"]
+            }
+          }
+        },
+        {
+          "name": "Cadastrar Veículo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"modelo\": \"Honda Civic\",\n  \"ano_fabricacao\": 2020,\n  \"ano_modelo\": 2021,\n  \"cor\": \"Preto\",\n  \"num_portas\": 4,\n  \"categoria_id\": 1,\n  \"montadora_id\": 3,\n  \"tipo_cambio\": \"Automático\",\n  \"tipo_direcao\": \"Elétrica\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/veiculo",
+              "host": ["{{base_url}}"],
+              "path": ["api", "veiculo"]
+            }
+          }
+        },
+        {
+          "name": "Ver Veículo",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/veiculo/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "veiculo", "1"]
+            }
+          }
+        },
+        {
+          "name": "Editar Veículo",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"modelo\": \"Honda Civic Sport\",\n  \"ano_fabricacao\": 2021,\n  \"ano_modelo\": 2022,\n  \"cor\": \"Azul\",\n  \"num_portas\": 4,\n  \"categoria_id\": 1,\n  \"montadora_id\": 3,\n  \"tipo_cambio\": \"Manual\",\n  \"tipo_direcao\": \"Elétrica\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/veiculo/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "veiculo", "1"]
+            }
+          }
+        },
+        {
+          "name": "Deletar Veículo",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/veiculo/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "veiculo", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuários",
+      "item": [
+        {
+          "name": "Ver Usuário Logado",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/usuario/logado",
+              "host": ["{{base_url}}"],
+              "path": ["api", "usuario", "logado"]
+            }
+          }
+        },
+        {
+          "name": "Listar Usuários",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/usuario",
+              "host": ["{{base_url}}"],
+              "path": ["api", "usuario"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Testes de Segurança",
+      "item": [
+        {
+          "name": "Listar Veículos SEM Token (deve dar 401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve retornar 401 sem token\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test(\"Deve conter mensagem de erro\", function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.success).to.be.false;",
+                  "    pm.expect(responseJson.erro).to.include(\"Token\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/veiculos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "veiculos"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:3000"
+    }
+  ]
+}

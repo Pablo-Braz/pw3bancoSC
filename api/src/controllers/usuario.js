@@ -87,9 +87,34 @@ export const consultarPorId = async (req, res) => {
 
 export const cadastrar = async (req, res) => {
     try {
-        const novo = await Usuario.cadastrar(req.body || {});
-        return res.status(201).json({ success: true, status: 201, data: novo });
+        const { nome, email, senha } = req.body || {};
+        if (!nome || !email || !senha) {
+            return res.status(400).json({ success: false, status: 400, erro: 'nome, email e senha são obrigatórios' });
+        }
+
+        const novo = await Usuario.cadastrar({ nome, email, senha });
+        const user = Array.isArray(novo) ? novo[0] : novo;
+
+        const horas = 24;
+        const sessao = await Token.criar(user.id, new Date(Date.now() + horas * 3600 * 1000));
+
+        res.cookie('sid', sessao.chave_token, {
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: process.env.MODE_ENV === 'production',
+            maxAge: horas * 3600 * 1000
+        });
+
+        return res.status(201).json({
+            success: true,
+            status: 201,
+            data: user,
+            token: sessao.chave_token
+        });
     } catch (error) {
+        if (error?.code === 'ER_DUP_ENTRY') {
+            return res.status(409).json({ success: false, status: 409, erro: 'E-mail já cadastrado' });
+        }
         return res.status(500).json({ success: false, status: 500, erro: 'Erro ao cadastrar usuário' });
     }
 };
