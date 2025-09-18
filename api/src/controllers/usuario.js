@@ -16,14 +16,6 @@ export const login = async (req, res) => {
         const horas = 24;
         const sessao = await Token.criar(user.id, new Date(Date.now() + horas * 3600 * 1000));
 
-        // Define cookie httpOnly com o token de sessão
-        res.cookie('sid', sessao.chave_token, {
-            httpOnly: true,
-            sameSite: 'lax',
-            secure: process.env.MODE_ENV === 'production',
-            maxAge: horas * 3600 * 1000
-        });
-
         return res.status(200).json({
             success: true,
             status: 200,
@@ -39,14 +31,21 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
     try {
-        const token = req.cookies?.sid || (req.headers.authorization?.split(' ')[1]);
+        const authHeader = req.headers.authorization;
+        let token = null;
+        
+        if (authHeader) {
+            const [bearer, t] = authHeader.split(' ');
+            if (bearer === 'Bearer' && t) token = t;
+        }
+        
         if (token) {
             const tokenData = await Token.consultar(token);
             if (tokenData?.usuario) {
                 await Token.revogar(tokenData.usuario);
             }
         }
-        res.clearCookie('sid');
+        
         return res.status(200).json({ success: true, status: 200, mensagem: 'Logout realizado' });
     } catch (error) {
         console.error('Erro no logout:', error);
@@ -97,13 +96,6 @@ export const cadastrar = async (req, res) => {
 
         const horas = 24;
         const sessao = await Token.criar(user.id, new Date(Date.now() + horas * 3600 * 1000));
-
-        res.cookie('sid', sessao.chave_token, {
-            httpOnly: true,
-            sameSite: 'lax',
-            secure: process.env.MODE_ENV === 'production',
-            maxAge: horas * 3600 * 1000
-        });
 
         return res.status(201).json({
             success: true,

@@ -3,26 +3,26 @@ import * as Usuario from '../models/UsuarioModel.js';
 
 export const middlewareAutenticacao = async (req, res, next) => {
     try {
-        // Obtém o token do cookie ou do header Authorization
-        const cookieToken = req.cookies?.sid;
+        // Obtém o token APENAS do header Authorization
         const authHeader = req.headers.authorization;
         
-        if (!cookieToken && !authHeader) {
+        if (!authHeader) {
             return res.status(401).json({
                 success: false,
                 status: 401,
-                erro: 'Token não fornecido'
+                erro: 'Token de autorização não fornecido'
             });
         }
 
         // Verifica se o formato é "Bearer token"
-        let token = cookieToken;
-        if (!token && authHeader) {
-            const [bearer, t] = authHeader.split(' ');
-            if (bearer === 'Bearer' && t) token = t;
-        }
-        if (!token) {
-            return res.status(401).json({ success: false, status: 401, erro: 'Token inválido' });
+        const [bearer, token] = authHeader.split(' ');
+        
+        if (bearer !== 'Bearer' || !token) {
+            return res.status(401).json({
+                success: false,
+                status: 401,
+                erro: 'Formato de token inválido. Use: Bearer <token>'
+            });
         }
 
         // Consulta o token no banco de dados
@@ -46,22 +46,6 @@ export const middlewareAutenticacao = async (req, res, next) => {
                 status: 401,
                 erro: 'Token expirado'
             });
-        }
-
-        // Se faltar menos de 60 minutos, estende a validade e renova cookie
-        const minutosRestantes = Math.floor((validade.getTime() - agora.getTime()) / 60000);
-        if (minutosRestantes < 60) {
-            try {
-                await Token.extender(tokenData.usuario, 24);
-                res.cookie('sid', token, {
-                    httpOnly: true,
-                    sameSite: 'lax',
-                    secure: process.env.MODE_ENV === 'production',
-                    maxAge: 24 * 3600 * 1000
-                });
-            } catch (e) {
-                console.warn('Falha ao estender token:', e?.message || e);
-            }
         }
 
         // Busca os dados do usuário
@@ -94,21 +78,19 @@ export const middlewareAutenticacao = async (req, res, next) => {
 
 export const middlewareAutenticacaoOpcional = async (req, res, next) => {
     try {
-        const cookieToken = req.cookies?.sid;
         const authHeader = req.headers.authorization;
         
-        if (!cookieToken && !authHeader) {
+        if (!authHeader) {
             // Se não há token, continua sem autenticação
             req.usuario = null;
             return next();
         }
 
-        let token = cookieToken;
-        if (!token && authHeader) {
-            const [bearer, t] = authHeader.split(' ');
-            if (bearer === 'Bearer' && t) token = t;
+        const [bearer, token] = authHeader.split(' ');
+        if (bearer !== 'Bearer' || !token) { 
+            req.usuario = null; 
+            return next(); 
         }
-        if (!token) { req.usuario = null; return next(); }
 
         const tokenData = await Token.consultar(token);
         

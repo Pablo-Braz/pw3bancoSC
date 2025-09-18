@@ -1,3 +1,5 @@
+import * as Veiculo from '../models/VeiculoModel.js';
+
 export const deletar = async (req, res) => {
     try {
         const id = req.params.id;
@@ -33,22 +35,38 @@ export const deletar = async (req, res) => {
         });
     }
 };
-import * as Veiculo from '../models/VeiculoModel.js';
 
 export const cadastrar = async (req, res) => {
     try {
+        console.log('=== INICIO CADASTRO VEICULO ===');
+        console.log('Body recebido:', req.body);
+        console.log('Usuario autenticado:', req.usuario?.id);
+        
         const veiculo = req.body;
 
         // Verificar se o corpo da requisição contém os dados necessários
         if (!veiculo || Object.keys(veiculo).length === 0) {
+            console.log('ERRO: Dados do veículo não fornecidos');
             return res.status(400).json({
                 success: false,
                 status: 400,
                 message: 'Dados do veículo não fornecidos'
             });
         }
+        
         // Validar os dados do veículo
         if (!veiculo.modelo || !veiculo.ano_fabricacao || !veiculo.ano_modelo || !veiculo.cor || !veiculo.num_portas || !veiculo.categoria_id || !veiculo.montadora_id || !veiculo.tipo_cambio || !veiculo.tipo_direcao) {
+            console.log('ERRO: Dados incompletos', {
+                modelo: !!veiculo.modelo,
+                ano_fabricacao: !!veiculo.ano_fabricacao,
+                ano_modelo: !!veiculo.ano_modelo,
+                cor: !!veiculo.cor,
+                num_portas: !!veiculo.num_portas,
+                categoria_id: !!veiculo.categoria_id,
+                montadora_id: !!veiculo.montadora_id,
+                tipo_cambio: !!veiculo.tipo_cambio,
+                tipo_direcao: !!veiculo.tipo_direcao
+            });
             return res.status(400).json({
                 success: false,
                 status: 400,
@@ -58,15 +76,24 @@ export const cadastrar = async (req, res) => {
 
         // Adicionar o ID do usuário logado
         veiculo.usuario_id = req.usuario.id;
+        console.log('Dados completos para cadastro:', veiculo);
         
-        const novoVeiculo = await Veiculo.cadastrar(veiculo);   
-        res.status(201).json({
+        const novoVeiculo = await Veiculo.cadastrar(veiculo);
+        console.log('Veículo cadastrado com ID:', novoVeiculo);
+        
+        const response = {
             success: true,
             status: 201,
             message: 'Veículo cadastrado com sucesso',
             veiculoId: novoVeiculo
-        });
+        };
+        
+        console.log('Resposta enviada:', response);
+        console.log('=== FIM CADASTRO VEICULO ===');
+        
+        res.status(201).json(response);
     } catch (error) {
+        console.error('ERRO NO CADASTRO:', error);
         res.status(500).json({
             success: false,
             status: 500,
