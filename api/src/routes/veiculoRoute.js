@@ -1,7 +1,7 @@
 
 import express from 'express';
 import * as veiculo from '../controllers/veiculoController.js';
-import { middlewareAutenticacao } from '../middlewares/Authentificação.js';
+import { middlewareAutenticacao } from '../middlewares/autenticacao.js';
 
 const router = express.Router();
 

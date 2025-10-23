@@ -1,6 +1,6 @@
 import express from 'express';
 import * as usuario from '../controllers/usuario.js';
-import { middlewareAutenticacao } from '../middlewares/Authentificação.js';
+import { middlewareAutenticacao } from '../middlewares/autenticacao.js';
 
 const router = express.Router();
 
