@@ -81,19 +81,6 @@ services:
     depends_on:
       - db
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
-    container_name: lv_phpmyadmin
-    depends_on:
-      - db
-    environment:
-      - PMA_HOST=db
-      - PMA_USER=lv_user
-      - PMA_PASSWORD=lv_password
-      - PMA_ABSOLUTE_URI=http://localhost:8080/
-    ports:
-      - "8080:80"
-
 volumes:
   db_data:
     name: lv_db_data
