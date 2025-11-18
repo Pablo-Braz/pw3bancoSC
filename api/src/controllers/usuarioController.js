@@ -2,6 +2,7 @@
 import * as UsuarioModel from "../models/UsuarioModel.js";
 import * as Sessoes from '../models/SessoesModel.js';
 import * as responses from '../utils/responses.js';
+import * as sessoesCache from '../utils/sessoesCache.js';
 
 /**
  * Cadastra um novo usuário no sistema.
@@ -75,6 +76,7 @@ export const login = async (req, res) => {
     //Efetuou login com sucesso
     const horas_validade = 36;
     const sessao = await Sessoes.criar(usuario.id, horas_validade);
+    sessoesCache.addSessao(usuario.id, sessao.token);
     
     const data = {
       token: usuario.id + "." + sessao.token,

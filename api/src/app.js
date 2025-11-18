@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import usuarioRoutes from './routes/usuarioRoutes.js';
 import instituicoesRoutes from './routes/instituicoesRoutes.js';
 import instituicaoUsuarioRoutes from './routes/InstituicaoUsuarioRoutes.js';
+import categoriaRoutes from './routes/categoriaRoute.js';
+import veiculoRoutes from './routes/veiculoRoute.js';
 dotenv.config();
 
 
@@ -29,6 +31,8 @@ app.get('/',(req,res)=>{
 app.use('/', usuarioRoutes);
 app.use('/', instituicoesRoutes);
 app.use('/', instituicaoUsuarioRoutes);
+app.use('/', categoriaRoutes);
+app.use('/', veiculoRoutes);
 
 const PORT = process.env.PORT || 3000; 
 app.listen(PORT,()=>{

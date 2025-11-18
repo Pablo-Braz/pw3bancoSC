@@ -10,7 +10,7 @@ let sessoes = [];
  */
 export function addSessao(usuario, token) {
   sessoes.push({
-    usuario,
+    usuario: String(usuario),
     token,
     criadoEm: Date.now()
   });
@@ -25,7 +25,8 @@ export function addSessao(usuario, token) {
  * @returns {Object||null} - Se existente retorna a sessão do usuario, caso contrário null
  */
 export function buscarSessao(usuario, token) {
-  return sessoes.find(s => (s.usuario === usuario && s.token === token));
+  const usuarioId = String(usuario);
+  return sessoes.find(s => (s.usuario === usuarioId && s.token === token));
 }
 
 // Função para limpar sessões expiradas

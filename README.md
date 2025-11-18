@@ -14,6 +14,14 @@ Este projeto é um sistema para divulgação e venda de veículos, permitindo qu
 - Publicação de veículos para venda
 - Recebimento e gerenciamento de ofertas de compra
 
+## API (Principais Rotas)
+
+- **Autenticação / Usuários** (`/usuario`, `/usuario/login`): cadastro, login e gestão de perfis.
+- **Instituições** (`/instituicao`, `/instituicoes`): cadastro e manutenção de instituições vinculadas a um organizador.
+- **Vínculo Usuário-Instituição** (`/instituicao-usuario`): solicitações, aprovações e listagens de vínculos.
+- **Categorias** (`/categoria`, `/categorias`): CRUD completo de categorias de veículos.
+- **Veículos** (`/veiculo`, `/veiculos`): cadastro, consulta, atualização e remoção de veículos filtrados por usuário logado.
+
 ## Como executar
 
 1. Clone o repositório.

@@ -106,6 +106,7 @@ CREATE TABLE `usuario` (
   `nome` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL UNIQUE,
   `senha` varchar(255) NOT NULL,
+  `avatar` varchar(255) DEFAULT NULL,
   `data_cadastro` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
