@@ -1,7 +1,7 @@
 // controller/usuarioController.js
 import * as UsuarioModel from "../models/UsuarioModel.js";
-import * as Sessoes from '../models/SessoesModel.js';
-import * as responses from '../utils/responses.js';
+import * as Token from '../models/Token.js';
+import * as responses from '../utils/response.js';
 
 /**
  * Cadastra um novo usuário no sistema.
@@ -72,13 +72,14 @@ export const login = async (req, res) => {
     if (!usuario) {
       return responses.error(res, { statusCode: 401, message: "Credenciais inválidas" });
     }
-    //Efetuou login com sucesso
+    // Efetuou login com sucesso → criar token na tabela `token`
     const horas_validade = 36;
-    const sessao = await Sessoes.criar(usuario.id, horas_validade);
-    
+    const validade = new Date(Date.now() + horas_validade * 3600 * 1000);
+    const tokenObj = await Token.criar(usuario.id, validade);
+
     const data = {
-      token: usuario.id + "." + sessao.token,
-      expiracao: sessao.validade,
+      token: tokenObj.chave_token,
+      expiracao: tokenObj.validade,
       usuario
     };
 
@@ -178,6 +179,28 @@ export const buscarUsuarioLogado = async (req, res) => {
 
     return responses.success(res, {message: "Usuário encontrado", data: usuario });
 
+  } catch (error) {
+    return responses.error(res, { message: error.message });
+  }
+};
+
+/**
+ * Logout — revoga token atual (se fornecido em Authorization)
+ */
+export const logout = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return responses.success(res, { message: 'Logout realizado', data: null });
+
+    const [bearer, token] = authHeader.split(' ');
+    if (bearer !== 'Bearer' || !token) return responses.success(res, { message: 'Logout realizado', data: null });
+
+    const tokenData = await Token.consultar(token);
+    if (tokenData && tokenData.usuario) {
+      await Token.revogar(tokenData.usuario);
+    }
+
+    return responses.success(res, { message: 'Logout realizado com sucesso' });
   } catch (error) {
     return responses.error(res, { message: error.message });
   }

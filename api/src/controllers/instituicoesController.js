@@ -1,5 +1,5 @@
 import * as InstituicaoModel from "../models/InstituicoesModel.js";
-import * as responses from '../utils/responses.js';
+import * as responses from '../utils/response.js';
 import * as InstituicaoUsuarioModel from "../models/InstituicaoUsuarioModel.js";
 
 /**

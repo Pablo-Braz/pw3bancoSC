@@ -1,6 +1,6 @@
 import * as InstituicaoUsuarioModel from "../models/InstituicaoUsuarioModel.js";
 import * as InstituicaoModel from "../models/InstituicoesModel.js";
-import * as responses from "../utils/responses.js";
+import * as responses from "../utils/response.js";
 
 /**
  * Usuário logado solicita vínculo em uma instituição.

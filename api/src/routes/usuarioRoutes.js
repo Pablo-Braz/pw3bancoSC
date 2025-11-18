@@ -1,11 +1,12 @@
 import * as usuarioController from "../controllers/usuarioController.js";
-import autenticar from "../middlewares/autenticacao.js";
+import autenticar from "../middlewares/auth.js";
 import express from "express";
 
 const router = express.Router();
 
 router.post("/usuario",                         usuarioController.cadastrar);
 router.post("/usuario/login",                   usuarioController.login);
+router.post("/usuario/logout",                  usuarioController.logout);
 router.get("/usuarios",             autenticar, usuarioController.listar);
 router.get("/usuario/:id",          autenticar, usuarioController.buscarPorId);
 router.get("/usuario",              autenticar, usuarioController.buscarUsuarioLogado); // Buscar usuário logado
