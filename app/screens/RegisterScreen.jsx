@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, Alert } from 'react-native';
-
-// Ajuste conforme seu ambiente (ver observações acima)
-const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL_API;
+import { register } from '../service/authService';
 
 export default function RegisterScreen({ navigation }) {
   const [nome, setNome] = useState('');
@@ -15,24 +13,17 @@ export default function RegisterScreen({ navigation }) {
   async function handleRegister() {
     setLoading(true);
     try {
-      const res = await fetch(`${BASE_URL}/usuario`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, email, senha, cargo, avatar })
-      });
-      const json = await res.json();
-      if (json.success) {
-        Alert.alert('Sucesso', json.message, [{ text: 'OK', onPress: () => navigation.navigate('Login') }]);
-        alert('Sucesso', json.message);
-        setNome('');
-        setEmail('');
-        setSenha('');
-        setCargo('');
-        setAvatar('');
-        navigation.navigate('Login');
-      } else {
-        Alert.alert('Erro', json.message || 'Falha no cadastro');
-      }
+      const result = await register({ nome, email, senha, cargo, avatar });
+
+      Alert.alert('Sucesso', result.message || 'Cadastro realizado com sucesso');
+
+      setNome('');
+      setEmail('');
+      setSenha('');
+      setCargo('');
+      setAvatar('');
+
+      navigation.navigate('Login');
     } catch (e) {
       Alert.alert('Erro', e.message);
     } finally {
