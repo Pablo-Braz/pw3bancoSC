@@ -1,6 +1,6 @@
 # Sistema LV
 
-Este projeto é um sistema para divulgação e venda de veículos, permitindo que proprietários publiquem seus veículos e recebam ofertas de compra de outros usuários.
+Este projeto é um sistema para divulgação e venda de veículos, permitindo que proprietários publiquem seus veículos e recebam ofertas de compra de outros usuáriods.
 
 ## Arquitetura
 
